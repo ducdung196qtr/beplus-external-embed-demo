@@ -1,95 +1,24 @@
-import Image from "next/image";
+import Script from "next/script";
 import styles from "./page.module.css";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+    <main className={styles.main}>
+      <section className={styles.hero}>
+        <p className={styles.eyebrow}>Beplus Site Assistant</p>
+        <h1>One assistant.<br />Any website.</h1>
+        <p className={styles.lede}>
+          This Next.js landing page has no WordPress runtime. The floating assistant is loaded by one external script and uses the same configured knowledge source.
+        </p>
+        <div className={styles.actions}><a href="#demo">View embed demo</a><a className={styles.secondary} href="#how">How it works</a></div>
+      </section>
+      <section id="demo" className={styles.grid}>
+        <article><span>01</span><h2>Standalone script</h2><p>A small browser-only widget mounts after your landing becomes interactive.</p></article>
+        <article><span>02</span><h2>No secret in browser</h2><p>The snippet only contains a public API URL and site identifier. Keys remain in WordPress.</p></article>
+        <article><span>03</span><h2>Shared assistant data</h2><p>FAQ, knowledge, guardrails, and answer pipeline stay in the Beplus Site Assistant plugin.</p></article>
+      </section>
+      <section id="how" className={styles.note}><strong>Demo mode</strong><p>This deployment uses a local test endpoint so the widget UI can be reviewed without exposing the VPS HTTP WordPress test instance to an HTTPS browser.</p></section>
+      <Script src="/embed.js" data-bsa-api="/api/beplus-site-assistant/v1" data-bsa-site="beplus-nextjs-demo" strategy="afterInteractive" />
+    </main>
   );
 }
