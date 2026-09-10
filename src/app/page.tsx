@@ -17,7 +17,7 @@ export default function Home() {
         <article><span>02</span><h2>No secret in browser</h2><p>The snippet only contains a public API URL and site identifier. Keys remain in WordPress.</p></article>
         <article><span>03</span><h2>Shared assistant data</h2><p>FAQ, knowledge, guardrails, and answer pipeline stay in the Beplus Site Assistant plugin.</p></article>
       </section>
-      <section id="how" className={styles.note}><strong>Demo mode</strong><p>This deployment uses a local test endpoint so the widget UI can be reviewed without exposing the VPS HTTP WordPress test instance to an HTTPS browser.</p></section>
+      <section id="how" className={styles.note}><strong>Live WordPress knowledge</strong><p>The widget is live-connected to Beplus Site Assistant on WordPress. This Vercel page uses a server-side bridge only because the VPS test WordPress instance is HTTP; browser code never receives an AI key.</p></section>
       <Script src="/embed.js" data-bsa-api="/api/beplus-site-assistant/v1" data-bsa-site="beplus-nextjs-demo" strategy="afterInteractive" />
     </main>
   );

@@ -1,9 +1,20 @@
-import { NextRequest, NextResponse } from "next/server";
-export function GET(request: NextRequest) {
-  const origin = request.headers.get("origin");
-  const allowed = new Set(["http://localhost:3000", "http://localhost:3001"]);
-  if (origin && !allowed.has(origin)) return NextResponse.json({ error: "Origin not allowed" }, { status: 403 });
-  // Relative URL deliberately keeps this local/Vercel demo same-origin.
-  // Production plugin config returns its own HTTPS WordPress REST URL.
-  return NextResponse.json({ ok: true, config: { apiUrl: "/api/beplus-site-assistant/v1/embed/chat", welcome: "Hi! I’m Beplus Assistant. This is the external embed UI contract demo.", faqs: [], botName: "Beplus Assistant", botStatus: "External embed demo", placeholder: "Ask about the integration…", accent: "#ec4899", widgetPosition: "bottom-right" } });
+import { NextResponse } from "next/server";
+
+const WORDPRESS = "http://160.250.135.47:8080";
+const ORIGIN = "https://beplus-external-embed-demo.vercel.app";
+
+export async function GET() {
+  try {
+    const response = await fetch(`${WORDPRESS}/?bsa_embed=config`, {
+      headers: { Origin: ORIGIN },
+      cache: "no-store",
+    });
+    const payload = await response.json();
+    if (!response.ok || !payload?.ok) throw new Error("WordPress config unavailable");
+    // Keep the browser same-origin; Vercel safely proxies to the test WP HTTP endpoint.
+    payload.config.apiUrl = "/api/beplus-site-assistant/v1/embed/chat";
+    return NextResponse.json(payload, { headers: { "Cache-Control": "no-store" } });
+  } catch {
+    return NextResponse.json({ ok: false, error: "Live WordPress assistant is unavailable." }, { status: 502 });
+  }
 }
