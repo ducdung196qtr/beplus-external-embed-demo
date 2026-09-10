@@ -11,8 +11,11 @@ export async function GET() {
     });
     const payload = await response.json();
     if (!response.ok || !payload?.ok) throw new Error("WordPress config unavailable");
-    // Keep the browser same-origin; Vercel safely proxies to the test WP HTTP endpoint.
+    // Keep browser requests HTTPS/same-origin while this test WordPress instance is HTTP.
+    // The asset proxy fetches the exact current widget files from the WordPress plugin.
     payload.config.apiUrl = "/api/beplus-site-assistant/v1/embed/chat";
+    payload.config.widgetCssUrl = "/api/beplus-site-assistant/v1/embed/asset/chat-widget.css";
+    payload.config.widgetJsUrl = "/api/beplus-site-assistant/v1/embed/asset/chat-widget.js";
     return NextResponse.json(payload, { headers: { "Cache-Control": "no-store" } });
   } catch {
     return NextResponse.json({ ok: false, error: "Live WordPress assistant is unavailable." }, { status: 502 });
