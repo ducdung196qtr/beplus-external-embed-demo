@@ -29,6 +29,24 @@ ORIGIN = "https://beplus-external-embed-demo.vercel.app"
 TOGGLE_BTN = "form:has(input[name='bsa_embed_action'][value='toggle']) button"
 
 
+HARNESS_SRC = "/root/bsa-test-harness/bsa_state.php"
+HARNESS_DST = "/tmp/bsa_state.php"
+
+
+def ensure_harness():
+    """The test driver lives in the container's /tmp, which a container
+    recreate wipes. Put it back, and shout if it is still missing — a silent
+    empty result would make every later check meaningless."""
+    subprocess.run(["docker", "cp", HARNESS_SRC, f"wp-app:{HARNESS_DST}"],
+                   capture_output=True)
+    probe = subprocess.run(["docker", "exec", "wp-app", "php", HARNESS_DST, "dump"],
+                           capture_output=True, text=True)
+    if not (probe.stdout or "").strip().startswith("{"):
+        raise SystemExit(
+            "bsa_state.php harness unavailable in wp-app "
+            f"(stdout={probe.stdout!r} stderr={probe.stderr.strip()[:200]!r})"
+        )
+
 def harness(*args):
     return subprocess.run(
         ["docker", "exec", "wp-app", "php", "/tmp/bsa_state.php", *map(str, args)],
@@ -203,6 +221,8 @@ def run_full_flow(pw):
     b.close()
     return r
 
+
+ensure_harness()
 
 EXPECT = [
     ("has_list", True), ("site_listed", True), ("connected_pill", True),

@@ -21,6 +21,24 @@ ORIGIN = "https://beplus-external-embed-demo.vercel.app"
 ENDPOINT = open("/tmp/bsa_tunnel_url").read().strip()
 
 
+HARNESS_SRC = "/root/bsa-test-harness/bsa_state.php"
+HARNESS_DST = "/tmp/bsa_state.php"
+
+
+def ensure_harness():
+    """The test driver lives in the container's /tmp, which a container
+    recreate wipes. Put it back, and shout if it is still missing — a silent
+    empty result would make every later check meaningless."""
+    subprocess.run(["docker", "cp", HARNESS_SRC, f"wp-app:{HARNESS_DST}"],
+                   capture_output=True)
+    probe = subprocess.run(["docker", "exec", "wp-app", "php", HARNESS_DST, "dump"],
+                           capture_output=True, text=True)
+    if not (probe.stdout or "").strip().startswith("{"):
+        raise SystemExit(
+            "bsa_state.php harness unavailable in wp-app "
+            f"(stdout={probe.stdout!r} stderr={probe.stderr.strip()[:200]!r})"
+        )
+
 def harness(*args):
     r = subprocess.run(
         ["docker", "exec", "wp-app", "php", "/tmp/bsa_state.php"] + [str(a) for a in args],
@@ -44,6 +62,8 @@ def signed_status(secret):
         capture_output=True, text=True,
     ).stdout.strip()
 
+
+ensure_harness()
 
 old = harness("secret")
 assert old, "no secret to rotate"
