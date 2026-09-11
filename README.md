@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Beplus Site Assistant — external embed demo
 
-## Getting Started
+A plain Next.js landing page that shows the real WordPress Site Assistant chat,
+without WordPress installed on the site and without any custom chat code.
 
-First, run the development server:
+Live: https://beplus-external-embed-demo.vercel.app/
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## How it works
+
+The entire integration is one script tag, generated inside WordPress under
+**Site Assistant → Embed Script** and pasted into the page:
+
+```html
+<script
+  src="https://your-wordpress/wp-content/plugins/beplus-site-assistant/assets/embed.js"
+  data-bsa-site="https://beplus-external-embed-demo.vercel.app"
+  data-bsa-key="pk_…"
+  defer></script>
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+In this repo that tag lives at the bottom of `src/app/page.tsx` (rendered with
+`next/script` so it behaves the same as a footer script).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+`embed.js` then:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. asks WordPress for that origin's public widget config,
+2. loads the **same** `chat-widget.css` and `chat-widget.js` that WordPress
+   serves, so the UI, mascot, FAQ and animations are identical, and
+3. points the widget's chat transport at WordPress.
 
-## Learn More
+WordPress stays the single source of truth for styling, copy, FAQs and
+knowledge. There is no second implementation of the chat UI here.
 
-To learn more about Next.js, take a look at the following resources:
+## Security
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- The snippet contains a public per-site key only — no AI key, no server secret.
+- WordPress accepts requests only from the exact origins approved in
+  **Site Assistant → Embed Script**; removing a site kills its key immediately.
+- Rate limits, spam guard, guardrails and the daily budget all still apply.
+- Config responses are stripped of anything internal (checked by QA).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Note on the `WORDPRESS` constant
 
-## Deploy on Vercel
+`WORDPRESS` in `src/app/page.tsx` points at the **test** WordPress used for this
+demo. That test stack only speaks plain HTTP on a private port, and an HTTPS
+page cannot call it directly (mixed content), so it is exposed through a
+temporary Cloudflare quick tunnel — hence the random `trycloudflare.com`
+hostname. If the tunnel restarts, update that one constant and redeploy.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+For a real site this does not apply: a production WordPress is already HTTPS, so
+the snippet points straight at it and no tunnel is involved.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## QA
+
+```bash
+python qa.py        # desktop 1440 + mobile 390, live answer, no overflow/errors
+```
+
+Artifacts land in `qa-artifacts/`.

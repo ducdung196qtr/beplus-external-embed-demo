@@ -8,7 +8,7 @@ import styles from "./page.module.css";
  * Site Assistant → Embed Script, pasted below. It loads the same widget CSS
  * and JS that WordPress serves, so the chat looks and behaves identically.
  */
-const WORDPRESS = "https://shine-smithsonian-acdbentity-many.trycloudflare.com";
+const WORDPRESS = "https://production-toddler-sample-securities.trycloudflare.com";
 
 export default function Home() {
   return (
