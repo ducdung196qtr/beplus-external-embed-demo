@@ -46,7 +46,7 @@ export default function Home() {
       <Script
         src={`${WORDPRESS}/wp-content/plugins/beplus-site-assistant/assets/embed.js`}
         data-bsa-site="https://beplus-external-embed-demo.vercel.app"
-        data-bsa-key="pk_y8M0kMje5K1SW275UbZj8QxMsgp3VJPv"
+        data-bsa-key="pk_WrQkewYFVUq5gMFyYbDiPUrktSMk1n4h"
         strategy="afterInteractive"
       />
     </main>
