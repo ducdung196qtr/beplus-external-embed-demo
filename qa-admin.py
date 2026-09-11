@@ -24,7 +24,9 @@ OUT = "/root/beplus-external-embed-demo/qa-artifacts"
 EMBED = f"{SITE}/wp-admin/admin.php?page=beplus-site-assistant-embed"
 SETTINGS = f"{SITE}/wp-admin/admin.php?page=beplus-site-assistant"
 
-ENDPOINT = open("/tmp/bsa_tunnel_url").read().strip()
+from bsa_endpoints import wp_url
+
+ENDPOINT = wp_url()
 ORIGIN = "https://beplus-external-embed-demo.vercel.app"
 TOGGLE_BTN = "form:has(input[name='bsa_embed_action'][value='toggle']) button"
 

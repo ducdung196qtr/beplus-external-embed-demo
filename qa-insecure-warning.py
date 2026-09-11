@@ -13,7 +13,9 @@ from playwright.sync_api import sync_playwright
 CHROME = "/root/.agent-browser/browsers/chrome-153.0.8010.36/chrome"
 USER, PWD = "admin", "Beplus!Test2026"
 OUT = "/root/beplus-external-embed-demo/qa-artifacts"
-TUNNEL = open("/tmp/bsa_tunnel_url").read().strip()
+from bsa_endpoints import wp_url
+
+TUNNEL = wp_url()
 
 
 def check(pw, origin, label):

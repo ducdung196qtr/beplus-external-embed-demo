@@ -6,7 +6,9 @@ from playwright.sync_api import sync_playwright
 
 CHROME = "/root/.agent-browser/browsers/chrome-153.0.8010.36/chrome"
 USER, PWD = "admin", "Beplus!Test2026"
-TUNNEL = open("/tmp/bsa_tunnel_url").read().strip()
+from bsa_endpoints import wp_url
+
+TUNNEL = wp_url()
 
 with sync_playwright() as pw:
     b = pw.chromium.launch(executable_path=CHROME, args=["--no-sandbox"])

@@ -18,7 +18,9 @@ EMBED = f"{SITE}/wp-admin/admin.php?page=beplus-site-assistant-embed"
 CHROME = "/root/.agent-browser/browsers/chrome-153.0.8010.36/chrome"
 USER, PWD = "admin", "Beplus!Test2026"
 ORIGIN = "https://beplus-external-embed-demo.vercel.app"
-ENDPOINT = open("/tmp/bsa_tunnel_url").read().strip()
+from bsa_endpoints import wp_url
+
+ENDPOINT = wp_url()
 
 
 HARNESS_SRC = "/root/bsa-test-harness/bsa_state.php"
